@@ -23,7 +23,7 @@ do
     --hosted-zone-id $HOSTZONE_ID \
     --change-batch '
     {
-        "Comment": "Updating Records to Route53"
+        "Comment": "Updating record set"
         ,"Changes": [{
         "Action"              : "UPSERT"
         ,"ResourceRecordSet"  : {
