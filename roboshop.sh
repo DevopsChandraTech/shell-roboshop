@@ -2,7 +2,7 @@
 
 AMI_ID="ami-0220d79f3f480ecf5"
 SG_ID="sg-0f5bdd34affdd5ed7"
-HOSTZONE_ID=""Z0502082140Q7QA6WMLFW
+HOSTZONE_ID="Z0502082140Q7QA6WMLFW"
 DOMAIN_NAME="devaws.shop"
 
 for instance in $@;
