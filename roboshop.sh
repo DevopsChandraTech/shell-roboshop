@@ -27,7 +27,7 @@ do
     {
         "Comment": "Updating Records to Route53"
         ,"Changes": [{
-        "Action"              : "UPSERT" #if not create,if exist update
+        "Action"              : "UPSERT"
         ,"ResourceRecordSet"  : {
             "Name"              : "'$RECORD_NAME'"
             ,"Type"             : "A"
