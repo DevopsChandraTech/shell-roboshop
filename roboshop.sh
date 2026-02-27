@@ -7,8 +7,7 @@ DOMAIN_NAME="devaws.shop"
 
 for instance in $@;
 do
-    # Get instance Id from ec2 instance 
-    # Give double quotes("") ResourceType
+    # Get instance Id from ec2 instance
     INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro --security-group-ids $SG_ID --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" --query 'Instances[0].InstanceId' --output text)
 
     if [ $instance != "frontend" ]; then
