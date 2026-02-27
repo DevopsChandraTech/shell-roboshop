@@ -12,8 +12,8 @@ do
         PUBLICE_IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress')
     fi
 
-    echo "PUBLIC_IP:$instance"
-    echo "PRIVATE_IP:$instance"
+    echo "$PUBLIC_IP:$instance"
+    echo "$PRIVATE_IP:$instance"
 
 done
 
