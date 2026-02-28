@@ -8,7 +8,7 @@ N="\e[0m"
 #log folder creation 
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-SCRIPT_DIR=$pwd
+SCRIPT_DIR=$PWD
 HOST_IP="mongodb.devaws.shop"
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p /var/log/shell-roboshop
@@ -32,18 +32,18 @@ VALIDATE(){
 }
 
 
-dnf module disable nodejs -y | tee -a $LOG_FILE
+dnf module disable nodejs -y &>>$LOG_FILE
 VALIDATE $? "Disable Nodejs Module"
 
-dnf module enable nodejs:20 -y | tee -a $LOG_FILE
+dnf module enable nodejs:20 -y &>>$LOG_FILE
 VALIDATE $? "Enable Nodejs Module"
 
-dnf install nodejs -y | &>>$LOG_FILE
+dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "Install Nodejs"
 
 #check here user exist or not
 id roboshop
-if [ id -ne 0 ]; then
+if [ $id -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
     VALIDATE $? "Creating User"
 else 
@@ -62,11 +62,11 @@ VALIDATE $? "Change Directory"
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unzip Code in tmp"
 
-cd $SCRIPT_DIR/app  &>>$LOG_FILE
-VALIDATE $? "Change Directory"
-
 npm install  &>>$LOG_FILE
 VALIDATE $? "Install Dependencies"
+
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
+VALIDATE $? "Copy Code"
 
 systemctl daemon-reload
 systemctl enable catalogue &>>$LOG_FILE
@@ -75,8 +75,7 @@ VALIDATE $? "Enable Catalogue"
 systemctl start catalogue &>>$LOG_FILE
 VALIDATE $? "Start Catalogue"
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
-VALIDATE $? "Copy Code"
+
 
 dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Install mongodb Client"
