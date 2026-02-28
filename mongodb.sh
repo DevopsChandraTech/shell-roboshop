@@ -69,7 +69,7 @@ VALIDATE(){
     fi
 }
 
-cp /etc/yum.repos.d/mongo.repo
+cp mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? Adding Mongo Repo 
 dnf install mongodb-org -y | tee -a $LOG_FILE 
 VALIDATE $? Installing Mongo Repo
