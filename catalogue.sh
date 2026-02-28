@@ -38,7 +38,7 @@ VALIDATE $? "Disable Nodejs Module"
 dnf module enable nodejs:20 -y | tee -a $LOG_FILE
 VALIDATE $? "Enable Nodejs Module"
 
-dnf install nodejs -y | tee -a $LOG_FILE
+dnf install nodejs -y | &>>$LOG_FILE
 VALIDATE $? "Install Nodejs"
 
 #check here user exist or not
@@ -50,40 +50,40 @@ else
     echo -e "User already exist... $Y SKIPPING $N"
 fi
 
-mkdir -p /app | tee -a $LOG_FILE
+mkdir -p /app | &>>$LOG_FILE
 VALIDATE $? "Create Directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip | tee -a $LOG_FILE
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
 VALIDATE $? "Downloading Code"
 
-cd /app 
+cd /app &>>$LOG_FILE
 VALIDATE $? "Change Directory"
 
-unzip /tmp/catalogue.zip
+unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "Unzip Code in tmp"
 
-cd /app 
+cd $SCRIPT_DIR/app  &>>$LOG_FILE
 VALIDATE $? "Change Directory"
 
-npm install  | tee -a $LOG_FILE
+npm install  &>>$LOG_FILE
 VALIDATE $? "Install Dependencies"
 
 systemctl daemon-reload
-systemctl enable catalogue | tee -a $LOG_FILE
+systemctl enable catalogue &>>$LOG_FILE
 VALIDATE $? "Enable Catalogue"
 
-systemctl start catalogue | tee -a $LOG_FILE
+systemctl start catalogue &>>$LOG_FILE
 VALIDATE $? "Start Catalogue"
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
 VALIDATE $? "Copy Code"
 
-dnf install mongodb-mongosh -y | tee -a $LOG_FILE
+dnf install mongodb-mongosh -y &>>$LOG_FILE
 VALIDATE $? "Install mongodb Client"
 
-mongosh --host $HOST_IP </app/db/master-data.js
+mongosh --host $HOST_IP </app/db/master-data.js &>>$LOG_FILE
 VALIDATE $? "Load Products"
 
-systemctl restart catalogue | tee -a $LOG_FILE
+systemctl restart catalogue &>>$LOG_FILE
 VALIDATE $? "Restart Service"
 
