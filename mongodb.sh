@@ -1,6 +1,5 @@
 #/bin/bash
 #colours for script
-
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
@@ -32,27 +31,27 @@ VALIDATE(){
 
 #copy mongodb repo
 cp mongo.repo /etc/yum.repos.d/mongo.repo
-VALIDATE $? Adding Mongo Repo 
+VALIDATE $? "Adding Mongo Repo" 
 
 #install mongodb
 dnf install mongodb-org -y &>> $LOG_FILE
-VALIDATE $? Installing Mongo Repo
+VALIDATE $? "Installing Mongo Repo"
 
 # enable mongodb
 systemctl enable mongod | tee -a $LOG_FILE
-VALIDATE $? Enable Mongo Repo
+VALIDATE $? "Enable Mongo Repo"
 
 #start mongodb
 systemctl start mongod | tee -a $LOG_FILE
-VALIDATE $? Start Mongo Repo
+VALIDATE $? "Start Mongo Repo"
 
 # using sed update ip address for remote connection
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
-VALIDATE $? Adding Remote Connection
+VALIDATE $? "Adding Remote Connection"
 
 #restart mongodb service
 systemctl restart mongod
-VALIDATE $? Restart Mongodb Service
+VALIDATE $? "Restart Mongodb Service"
 
 
 
