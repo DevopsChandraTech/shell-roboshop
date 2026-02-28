@@ -56,7 +56,7 @@ N="\e[0m"
 
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f2)
-LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.sh"
+LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p /var/log/shell-roboshop
 
 
