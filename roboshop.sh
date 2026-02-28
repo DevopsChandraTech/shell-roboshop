@@ -30,7 +30,7 @@ do
         ,"Changes": [{
         "Action"              : "UPSERT"
         ,"ResourceRecordSet"  : {
-            "Name"              : "'$RECORD_NAME'" # mongodb.devaws.shop
+            "Name"              : "'$RECORD_NAME'"
             ,"Type"             : "A"
             ,"TTL"              : 1
             ,"ResourceRecords"  : [{
