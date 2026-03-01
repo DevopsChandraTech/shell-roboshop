@@ -55,11 +55,11 @@ VALIDATE $? "Create Directory"
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOG_FILE
 VALIDATE $? "Download Code"
 
-rm -rf /app*
-VALIDATE $? "Remove directory"
-
 cd /app
-VALIDATE $? "Enter app Directory" 
+VALIDATE $? "Enter app Directory"
+
+rm -rf /app*
+VALIDATE $? "Remove code"
 
 unzip /tmp/catalogue.zip &>> $LOG_FILE
 VALIDATE $? "Unzip Code"
