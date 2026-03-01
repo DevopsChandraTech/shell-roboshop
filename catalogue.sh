@@ -9,7 +9,7 @@ N="\e[0m"
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 SCRIPT_DIR=$PWD #this is special variable for current Directory
-HOST_IP="mongodb.devaws.shop"
+MONGODB_HOST="mongodb.devaws.shop"
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p /var/log/shell-roboshop
 
@@ -83,10 +83,10 @@ VALIDATE $? "Copy mongodb repo"
 dnf install mongodb-mongosh -y  &>> $LOG_FILE
 VALIDATE $? "Install mongosh"
 
-mongosh --host $HOST_IP </app/db/master-data.js &>> $LOG_FILE
+mongosh --host $MONGODB_HOST </app/db/master-data.js &>> $LOG_FILE
 VALIDATE $? "Load Products"
 
-INDEX=$(mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+INDEX=$(mongosh mongodb.devaws.shop --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Load catalogue products"
