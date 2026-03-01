@@ -42,17 +42,17 @@ dnf install nodejs -y &>> $LOG_FILE
 VALIDATE $? "Install nodejs"
 
 id roboshop &>> $LOG_FILE
-if [ id -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $LOG_FILE
     VALIDATE $? "Creating User"
 else 
-    echo "User Already Exist....! $Y SKIPPING $N"
+    echo -e "User Already Exist....! $Y SKIPPING $N" &>> $LOG_FILE
 fi
 
 mkdir -p /app  &>> $LOG_FILE
 VALIDATE $? "Create Directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOG_FILE
 VALIDATE $? "Download Code"
 
 cd /app
@@ -74,7 +74,7 @@ VALIDATE $? "Enable Service"
 systemctl start catalogue &>> $LOG_FILE
 VALIDATE $? "Start Service"
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Copy mongodb repo"
 
 dnf install mongodb-mongosh -y  &>> $LOG_FILE
