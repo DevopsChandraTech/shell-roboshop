@@ -8,7 +8,7 @@ N="\e[0m"
 #log folder creation 
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-SCRIPT_DIR=$PWD
+SCRIPT_DIR=$PWD #this is special variable for current Directory
 HOST_IP="mongodb.devaws.shop"
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p /var/log/shell-roboshop
@@ -32,57 +32,54 @@ VALIDATE(){
 }
 
 
-dnf module disable nodejs -y &>>$LOG_FILE
-VALIDATE $? "Disable Nodejs Module"
+dnf module disable nodejs -y &>> $LOG_FILE
+VALIDATE $? "Disable nodejs"
 
-dnf module enable nodejs:20 -y &>>$LOG_FILE
-VALIDATE $? "Enable Nodejs Module"
+dnf module enable nodejs:20 -y &>> $LOG_FILE
+VALIDATE $? "Enable nodejs"
 
-dnf install nodejs -y &>>$LOG_FILE
-VALIDATE $? "Install Nodejs"
+dnf install nodejs -y &>> $LOG_FILE
+VALIDATE $? "Install nodejs"
 
-#check here user exist or not
-id roboshop
-if [ $id -ne 0 ]; then
+id roboshop &>> $LOG_FILE
+if [ id -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
     VALIDATE $? "Creating User"
 else 
-    echo -e "User already exist... $Y SKIPPING $N"
+    echo "User Already Exist....! $Y SKIPPING $N"
 fi
 
-mkdir -p /app | &>>$LOG_FILE
+mkdir -p /app  &>> $LOG_FILE
 VALIDATE $? "Create Directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOG_FILE
-VALIDATE $? "Downloading Code"
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+VALIDATE $? "Download Code"
 
-cd /app &>>$LOG_FILE
-VALIDATE $? "Change Directory"
+cd /app
+VALIDATE $? "Enter app Directory" 
 
-unzip /tmp/catalogue.zip &>>$LOG_FILE
-VALIDATE $? "Unzip Code in tmp"
+unzip /tmp/catalogue.zip &>> $LOG_FILE
+VALIDATE $? "Unzip Code"
 
-npm install  &>>$LOG_FILE
+npm install &>> $LOG_FILE
 VALIDATE $? "Install Dependencies"
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOG_FILE
-VALIDATE $? "Copy Code"
+cp  $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service 
+VALIDATE $? "Creating Service"
 
 systemctl daemon-reload
-systemctl enable catalogue &>>$LOG_FILE
-VALIDATE $? "Enable Catalogue"
+systemctl enable catalogue  &>> $LOG_FILE
+VALIDATE $? "Enable Service"
 
-systemctl start catalogue &>>$LOG_FILE
-VALIDATE $? "Start Catalogue"
+systemctl start catalogue &>> $LOG_FILE
+VALIDATE $? "Start Service"
 
+cp mongo.repo /etc/yum.repos.d/mongo.repo
+VALIDATE $? "Copy mongodb repo"
 
+dnf install mongodb-mongosh -y  &>> $LOG_FILE
+VALIDATE $? "Install mongosh"
 
-dnf install mongodb-mongosh -y &>>$LOG_FILE
-VALIDATE $? "Install mongodb Client"
-
-mongosh --host $HOST_IP </app/db/master-data.js &>>$LOG_FILE
+mongosh --host $HOST_IP </app/db/master-data.js &>> $LOG_FILE
 VALIDATE $? "Load Products"
-
-systemctl restart catalogue &>>$LOG_FILE
-VALIDATE $? "Restart Service"
 
