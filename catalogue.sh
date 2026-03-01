@@ -58,7 +58,7 @@ VALIDATE $? "Download Code"
 cd /app
 VALIDATE $? "Enter app Directory"
 
-rm -rf /app*
+rm -rf /app/*
 VALIDATE $? "Remove code"
 
 unzip /tmp/catalogue.zip &>> $LOG_FILE
