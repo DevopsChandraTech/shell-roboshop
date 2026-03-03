@@ -29,6 +29,8 @@ VALIDATE(){
     fi
 }
 
+cp rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
+
 dnf install rabbitmq-server -y &>> $LOG_FILE
 VALIDATE $? "Install rabbitmq"
 
@@ -37,3 +39,9 @@ VALIDATE $? "Install rabbitmq"
 
 systemctl start rabbitmq-server &>> $LOG_FILE
 VALIDATE $? "Install rabbitmq"
+
+rabbitmqctl add_user roboshop roboshop123
+VALIDATE $? "Added User"
+
+rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
+VALIDATE $? "Set Permissions"
