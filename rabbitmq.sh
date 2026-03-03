@@ -31,6 +31,8 @@ VALIDATE(){
     fi
 }
 
+echo "the script execution started at $(date)"
+
 cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
 
 dnf install rabbitmq-server -y &>> $LOG_FILE
@@ -46,5 +48,5 @@ rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>> $LOG_FILE
 VALIDATE $? "Set Permissions"
 
 END_TIME=$(date +%s)
-TOTAL_TIME=$(($START_TIME-$END_TIME))
+TOTAL_TIME=$(($END_TIME-$START_TIME))
 echo "the script executed time $TOTAL_TIME seconds."
