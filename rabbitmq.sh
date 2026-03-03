@@ -8,6 +8,8 @@ N="\e[0m"
 #log folder creation 
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
+START_TIME=$(date +%s)
+SCRIPT_DIR=$PWD
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p /var/log/shell-roboshop
 
@@ -22,14 +24,14 @@ fi
 
 VALIDATE(){
     if [ $1 -ne 0 ]; then
-        echo -e "$2 ... $R Failure $N"
+        echo -e "$2 ... $R Failure $N" | tee -a $LOG_FILE
         exit 1
     else
-        echo -e "$2 ... $G Success $N"
+        echo -e "$2 ... $G Success $N" | tee -a $LOG_FILE
     fi
 }
 
-cp rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
+cp $SCRIPT_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
 
 dnf install rabbitmq-server -y &>> $LOG_FILE
 VALIDATE $? "Install rabbitmq"
@@ -40,13 +42,9 @@ VALIDATE $? "Install rabbitmq"
 systemctl start rabbitmq-server &>> $LOG_FILE
 VALIDATE $? "Install rabbitmq"
 
-id roboshop &>>$LOG_FILE
-if [ $? -ne 0 ]; then
-    rabbitmqctl add_user roboshop roboshop123 &>> $LOG_FILE
-    VALIDATE $? "Adding User"
-else 
-    echo -e "User already exist...! $Y SKIPPING $N"
-fi
-
 rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*" &>> $LOG_FILE
 VALIDATE $? "Set Permissions"
+
+END_TIME=$(date +%s)
+TOTAL_TIME=$(($START_TIME-$END_TIME))
+echo "the script executed time $TOTAL_TIME seconds."
