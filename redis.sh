@@ -41,7 +41,7 @@ VALIDATE $? "Install redis"
 sed -i "s/127.0.0.1/0.0.0.0/g" /etc/redis/redis.conf &>>$LOG_FILE
 VALIDATE $? "Allow Remote Connection"
 
-sed -i '/protected-mode/ c protected-mode no' &>>$LOG_FILE
+sed -i '/protected-mode/ c protected-mode no' /etc/redis/redis.conf &>>$LOG_FILE
 VALIDATE $? "Set Protected Mode No"
 
 
