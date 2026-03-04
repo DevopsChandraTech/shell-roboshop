@@ -59,7 +59,6 @@ VALIDATE $? "Enter default Directory"
 unzip /tmp/frontend.zip &>>LOG_FILE
 VALIDATE $? "Unzip code"
 
-rm -rf /etc/nginx/nginx.conf
 cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
 VALIDATE $? "Copying nginx.conf"
 
