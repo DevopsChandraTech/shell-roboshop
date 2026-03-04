@@ -77,15 +77,6 @@ VALIDATE $? "Enable Service"
 systemctl start cart &>> $LOG_FILE
 VALIDATE $? "Start Service"
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-VALIDATE $? "Copy mongodb repo"
-
-dnf install mongodb-mongosh -y  &>> $LOG_FILE
-VALIDATE $? "Install mongosh"
-
-mongosh --host $MONGODB_HOST </app/db/master-data.js &>> $LOG_FILE
-VALIDATE $? "Load Products"
-
 systemctl restart cart
 VALIDATE $? "Restarted cart"
 
