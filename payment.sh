@@ -31,6 +31,8 @@ VALIDATE(){
     fi
 }
 
+echo "the script started at $(date)"
+
 dnf install python3 gcc python3-devel -y &>>$LOG_FILE
 VALIDATE $? "Install Python"
 

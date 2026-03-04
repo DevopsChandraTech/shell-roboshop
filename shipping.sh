@@ -35,47 +35,48 @@ echo "the script executed at $(date)"
 dnf install maven -y &>>$LOG_FILE
 VALIDATE $? "Installing Maven"
 
-id roboshop
-if [ $id -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+id roboshop &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
     VALIDATE $? "Adding System User"
 else 
-    echo -e "User already exist..! $Y SKIPPING $N" 
+    echo -e "User already exist..! $Y SKIPPING $N" &>>$LOG_FILE
 fi
 
 mkdir -p /app
-curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
 cd /app 
-unzip /tmp/shipping.zip
+rm -rf /app/*
+unzip /tmp/shipping.zip &>>$LOG_FILE
 VALIDATE $? "Extract Code"
 
 cd /app 
-mvn clean package 
-mv target/shipping-1.0.jar shipping.jar 
+mvn clean package &>>$LOG_FILE
+mv target/shipping-1.0.jar shipping.jar  
 VALIDATE $? "Install Dependencies"
 
-cp /$SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
+cp /$SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
 VALIDATE $? "Copy Code"
 
 systemctl daemon-reload
 
-systemctl enable shipping 
+systemctl enable shipping &>>$LOG_FILE
 VALIDATE $? "Enable Shipping Service"
 
-systemctl start shipping
+systemctl start shipping &>>$LOG_FILE
 VALIDATE $? "Start Shipping Service"
 
-dnf install mysql -y 
+dnf install mysql -y  &>>$LOG_FILE
 VALIDATE $? "Installing MySql Client"
 
-mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/schema.sql
+mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
 VALIDATE $? "Create Schema MySql"
 
-mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/app-user.sql 
+mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/app-user.sql &>>$LOG_FILE
 VALIDATE $? "Crate App User"
 
-mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/master-data.sql
+mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
 VALIDATE $? "Load Master Data"
 
-systemctl restart shipping
+systemctl restart shipping &>>$LOG_FILE
 VALIDATE $? "Restart Shipping Service"
