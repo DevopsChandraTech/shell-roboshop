@@ -1,82 +1,76 @@
-#/bin/bash
-#colours for script
+#!/bin/bash
+
+USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
-#log folder creation 
-LOG_FOLDER="/var/log/shell-roboshop"
-SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
-SCRIPT_DIR=$PWD #this is special variable for current Directory
-MONGODB_HOST="mongodb.devaws.shop"
-LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
-mkdir -p /var/log/shell-roboshop
+LOGS_FOLDER="/var/log/shell-roboshop"
+SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
+SCRIPT_DIR=$PWD
+MONGODB_HOST=mongodb.devaws.shop
+LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-script/16-logs.log
+MYSQL_HOST=mysql.devaws.shop
 
-# checks user with root priviliges or not
-USER_ID=$(id -u)
+mkdir -p $LOGS_FOLDER
+echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
-if [ $USER_ID -ne 0 ]; then
-    echo "Error:: Run Command With Root User Privilizes."
-    exit 1
+if [ $USERID -ne 0 ]; then
+    echo "ERROR:: Please run this script with root privelege"
+    exit 1 # failure is other than 0
 fi
 
-# validation for script exist or not
-VALIDATE(){
+VALIDATE(){ # functions receive inputs through args just like shell script args
     if [ $1 -ne 0 ]; then
-        echo -e "$2 ... $R Failure $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
     else
-        echo -e "$2 ... $G Success $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $G SUCCESS $N" | tee -a $LOG_FILE
     fi
 }
 
-echo "the script executed at $(date)"
 dnf install maven -y &>>$LOG_FILE
-VALIDATE $? "Installing Maven"
 
 id roboshop &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-    VALIDATE $? "Adding System User"
-else 
-    echo -e "User already exist..! $Y SKIPPING $N" &>>$LOG_FILE
+    VALIDATE $? "Creating system user"
+else
+    echo -e "User already exist ... $Y SKIPPING $N"
 fi
 
 mkdir -p /app
-curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
+VALIDATE $? "Creating app directory"
+
+curl -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
+VALIDATE $? "Downloading shipping application"
+
 cd /app 
+VALIDATE $? "Changing to app directory"
+
 rm -rf /app/*
+VALIDATE $? "Removing existing code"
+
 unzip /tmp/shipping.zip &>>$LOG_FILE
-VALIDATE $? "Extract Code"
+VALIDATE $? "unzip shipping"
 
-cd /app 
-mvn clean package &>>$LOG_FILE
-mv target/shipping-1.0.jar shipping.jar  
-VALIDATE $? "Install Dependencies"
+mvn clean package  &>>$LOG_FILE
+mv target/shipping-1.0.jar shipping.jar 
 
-cp /$SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
-VALIDATE $? "Copy Code"
-
+cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
 systemctl daemon-reload
-
-systemctl enable shipping &>>$LOG_FILE
-VALIDATE $? "Enable Shipping Service"
-
-systemctl start shipping &>>$LOG_FILE
-VALIDATE $? "Start Shipping Service"
+systemctl enable shipping  &>>$LOG_FILE
 
 dnf install mysql -y  &>>$LOG_FILE
-VALIDATE $? "Installing MySql Client"
 
-mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
-VALIDATE $? "Create Schema MySql"
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e 'use cities' &>>$LOG_FILE
+if [ $? -ne 0 ]; then
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql  &>>$LOG_FILE
+    mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
+else
+    echo -e "Shipping data is already loaded ... $Y SKIPPING $N"
+fi
 
-mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/app-user.sql &>>$LOG_FILE
-VALIDATE $? "Crate App User"
-
-mysql -h mysql.devaws.shop -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
-VALIDATE $? "Load Master Data"
-
-systemctl restart shipping &>>$LOG_FILE
-VALIDATE $? "Restart Shipping Service"
+systemctl restart shipping
