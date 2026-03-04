@@ -42,7 +42,9 @@ else
     echo "User already exist..! $Y SKIPPING $N"
 fi
 
+
 mkdir -p /app
+rm -rf payment.zip/*
 curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip 
 cd /app 
 unzip /tmp/payment.zip
