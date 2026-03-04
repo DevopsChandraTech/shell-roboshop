@@ -11,7 +11,7 @@ SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 SCRIPT_DIR=$PWD #this is special variable for current Directory
 MONGODB_HOST=mongodb.devaws.shop
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
-mkdir -p /var/log/shell-roboshop
+mkdir -p $LOG_FOLDER
 
 # checks user with root priviliges or not
 USER_ID=$(id -u)
