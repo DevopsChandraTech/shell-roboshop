@@ -83,7 +83,7 @@ VALIDATE $? "Copy mongodb repo"
 dnf install mongodb-mongosh -y  &>> $LOG_FILE
 VALIDATE $? "Install mongosh"
 
-INDEX=$(mongosh mongodb.daws86s.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+INDEX=$(mongosh mongodb.devaws.shop --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
 if [ $INDEX -le 0 ]; then
     mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
     VALIDATE $? "Load catalogue products"
