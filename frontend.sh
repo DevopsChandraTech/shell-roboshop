@@ -31,8 +31,6 @@ VALIDATE(){
 
 echo "the script executed time at $(date)"
 
-dnf module list nginx &>>LOG_FILE
-
 dnf module disable nginx -y &>>LOG_FILE
 VALIDATE $? "Disable Nginx Server"
 
@@ -60,6 +58,7 @@ VALIDATE $? "Enter default Directory"
 unzip /tmp/frontend.zip &>>LOG_FILE
 VALIDATE $? "Unzip code"
 
+rm -rf /etc/nginx/nginx.conf
 cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf &>>LOG_FILE
 
 systemctl restart nginx &>>LOG_FILE
