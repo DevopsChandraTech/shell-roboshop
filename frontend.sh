@@ -8,6 +8,7 @@ N="\e[0m"
 #log folder creation 
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
+SCRIPT_DIR=$PWD
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p /var/log/shell-roboshop
 
