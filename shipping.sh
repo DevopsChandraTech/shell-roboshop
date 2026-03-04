@@ -32,7 +32,7 @@ VALIDATE(){
 }
 
 echo "the script executed at $(date)"
-dnf install maven -y &>>LOG_FILE
+dnf install maven -y &>>$LOG_FILE
 VALIDATE $? "Installing Maven"
 
 id roboshop
@@ -40,7 +40,7 @@ if [ $id -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
     VALIDATE $? "Adding System User"
 else 
-    echo -e "User already exist..! $Y SKIPPING $N"
+    echo -e "User already exist..! $Y SKIPPING $N" 
 fi
 
 mkdir -p /app
