@@ -9,7 +9,7 @@ N="\e[0m"
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 SCRIPT_DIR=$PWD #this is special variable for current Directory
-MONGODB_HOST="mongodb.devaws.shop"
+MONGODB_HOST=mongodb.devaws.shop
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 mkdir -p /var/log/shell-roboshop
 
@@ -73,9 +73,6 @@ VALIDATE $? "Creating Service"
 systemctl daemon-reload
 systemctl enable cart  &>> $LOG_FILE
 VALIDATE $? "Enable Service"
-
-systemctl start cart &>> $LOG_FILE
-VALIDATE $? "Start Service"
 
 systemctl restart cart
 VALIDATE $? "Restarted cart"
