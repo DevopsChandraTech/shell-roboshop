@@ -44,9 +44,9 @@ fi
 
 
 mkdir -p /app
-rm -rf payment.zip/*
 curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip 
 cd /app 
+rm -rf payment.zip/*
 unzip /tmp/payment.zip
 VALIDATE $? "Download Code"
 
