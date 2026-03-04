@@ -34,8 +34,13 @@ VALIDATE(){
 dnf install python3 gcc python3-devel -y
 VALIDATE $? "Install Python"
 
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-VALIDATE $? "Adding System User"
+id roboshop
+if [ $id -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    VALIDATE $? "Adding System User"
+else 
+    echo "User already exist..! $Y SKIPPING $N"
+fi
 
 mkdir -p /app
 curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip 
