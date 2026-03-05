@@ -42,7 +42,7 @@ VALIDATE $? "Start MySql"
 mysql_secure_installation --set-root-pass RoboShop@1 &>>$LOG_FILE
 VALIDATE $? "Set Password"
 
-END_TIME=$(date %s)
-TOTAL_TIME=$(($START_TIME-$END_TIME))
+END_TIME=$(date +%s)
+TOTAL_TIME=$(( $START_TIME - $END_TIME ))
 echo -e "Script Executed in $Y TOTAL_TIME $N"
 
