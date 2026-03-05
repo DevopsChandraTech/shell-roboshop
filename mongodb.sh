@@ -47,7 +47,7 @@ VALIDATE $? "Start Mongo Repo"
 
 # using sed update ip address for remote connection
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
-VALIDATE $? "Adding Remote Connection"
+VALIDATE $? "Allowing Remote Connection"
 
 #restart mongodb service
 systemctl restart mongod

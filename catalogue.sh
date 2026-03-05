@@ -67,15 +67,12 @@ VALIDATE $? "Unzip Code"
 npm install &>> $LOG_FILE
 VALIDATE $? "Install Dependencies"
 
-cp  $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service 
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service 
 VALIDATE $? "Creating Service"
 
 systemctl daemon-reload
 systemctl enable catalogue  &>> $LOG_FILE
 VALIDATE $? "Enable Service"
-
-systemctl start catalogue &>> $LOG_FILE
-VALIDATE $? "Start Service"
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Copy mongodb repo"

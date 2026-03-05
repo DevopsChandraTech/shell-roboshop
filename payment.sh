@@ -46,17 +46,24 @@ fi
 
 
 mkdir -p /app
-curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>> $LOG_FILE
-cd /app 
-rm -rf /app/* &>> $LOG_FILE
-unzip /tmp/payment.zip &>> $LOG_FILE
-VALIDATE $? "Download Code"
+VALIDATE $? "Creating App Directory"
 
-cd /app 
+curl -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>> $LOG_FILE
+VALIDATE $? "Downloading payment application"
+
+cd /app
+VALIDATE $? "Chaging to app directory"
+
+rm -rf /app/* &>> $LOG_FILE
+VALIDATE $? "Removing existing directory"
+
+unzip /tmp/payment.zip &>> $LOG_FILE
+VALIDATE $? "Unzip Payment"
+
 pip3 install -r requirements.txt &>> $LOG_FILE
 VALIDATE $? "Install requirments"
 
-cp /$SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>> $LOG_FILE
+cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>> $LOG_FILE
 VALIDATE $? "Copy Dependencies"
 
 systemctl daemon-reload

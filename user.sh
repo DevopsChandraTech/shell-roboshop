@@ -67,7 +67,7 @@ VALIDATE $? "Unzip Code"
 npm install &>> $LOG_FILE
 VALIDATE $? "Install Dependencies"
 
-cp  $SCRIPT_DIR/user.service /etc/systemd/system/user.service 
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service 
 VALIDATE $? "Creating Service"
 
 systemctl daemon-reload

@@ -9,6 +9,7 @@ N="\e[0m"
 LOG_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
+START_TIME=$(date +%s)
 mkdir -p /var/log/shell-roboshop
 
 # checks user with root priviliges or not
@@ -40,4 +41,8 @@ VALIDATE $? "Start MySql"
 
 mysql_secure_installation --set-root-pass RoboShop@1 &>>$LOG_FILE
 VALIDATE $? "Set Password"
+
+END_TIME=$(date %s)
+TOTAL_TIME=$(($START_TIME-$END_TIME))
+echo -e "Script Executed in $Y TOTAL_TIME $N"
 
