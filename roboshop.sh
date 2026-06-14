@@ -7,14 +7,14 @@ SG_ID="sg-0f5bdd34affdd5ed7"
 
 for instance in $@ # mongodb redis mysql
 do
-        INSTANCE_ID=$(aws ec2 run-instances \
+        INSTANCE_ID=$((aws ec2 run-instances \
         --image-id $AMI_ID \
         --instance-type t3.micro \
         --security-groups $SG_ID \
         --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=roboshop-$instance}]" \
         --query 'Instances[0].InstanceId' \
         --output text
-    )
+    ))
 
     # Get Private IP
     if [ $instance != "frontend" ]; then
