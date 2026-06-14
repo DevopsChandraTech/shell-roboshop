@@ -10,7 +10,7 @@ do
     if [ $instance != "frontend" ]; then
         IP=345
     else
-        IP=$(aws ec2 describe-instances --instance-ids i-0bc3817e5c17034f1 --query 'Reservations[0].Instances[0]. \ PublicIpAddress' --output text)
+        IP=123
     fi
 
     echo "instance: $IP"
