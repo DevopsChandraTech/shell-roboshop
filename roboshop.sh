@@ -17,6 +17,7 @@ do
     fi
 
     echo "$instance: $IP"
+done
 
 # for instance in $@
 # do
