@@ -20,7 +20,7 @@ do
     echo "$instance: $IP"
 
     aws route53 change-resource-record-sets \
-    --hosted-zone-id 1234567890ABC \
+    --hosted-zone-id $ZONE_ID \
     --change-batch '
     {
         "Comment": "Updating Route53 Records"
