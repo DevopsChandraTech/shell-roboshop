@@ -2,6 +2,8 @@
 
 AMI_ID="ami-0220d79f3f480ecf5"
 SG_ID="sg-0f5bdd34affdd5ed7"
+ZONE_ID="Z0502082140Q7QA6WMLFW"
+DOMAIN_NAME="devaws.shop"
 
 for instance in $@
 do
@@ -9,9 +11,30 @@ do
 
     if [ $instance != "frontend" ]; then
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query "Reservations[0].Instances[0].NetworkInterfaces[0].PrivateIpAddress" --output text)
+        RECORD_NAME=$instance.$DOMAIN_NAME # mongodb.devaws.shop
     else
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+        RECORD_NAME=$DOMAIN_NAME # devaws.shop
     fi
 
     echo "$instance: $IP"
+
+    aws route53 change-resource-record-sets \
+    --hosted-zone-id 1234567890ABC \
+    --change-batch '
+    {
+        "Comment": "Updating Route53 Records"
+        ,"Changes": [{
+        "Action"              : "UPSERT" #if record not created create if any update, update the record
+        ,"ResourceRecordSet"  : {
+            "Name"              : "'$RECORD_NAME'"
+            ,"Type"             : "A"
+            ,"TTL"              : 1
+            ,"ResourceRecords"  : [{
+                "Value"         : "'" $IP "'"
+            }]
+        }
+        }]
+    }
+    '
 done
