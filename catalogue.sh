@@ -19,7 +19,7 @@ fi
 LOG_FOLDER="/var/log/shell-script"
 SCRIPT_NAME=$(echo $0 | awk -F "." '{print $1}')
 SCRIPT_DIR=$PWD
-$MONGODB_HOST="mongodb.devaws.shop"
+MONGODB_HOST="mongodb.devaws.shop"
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
 
 mkdir -p $LOG_FOLDER
