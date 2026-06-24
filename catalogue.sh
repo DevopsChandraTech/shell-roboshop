@@ -64,7 +64,7 @@ VALIDATE $? "Change Directory"
 npm install &>> $LOG_FILE
 VALIDATE $? "Install Dependencies"
 
-cp /SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
+cp /$SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Copy systemctl Service"
 
 systemctl daemon-reload &>> $LOG_FILE
@@ -74,7 +74,7 @@ VALIDATE $? "Enable Service"
 systemctl start catalogue &>> $LOG_FILE
 VALIDATE $? "Start Service"
 
-cp /SCRIPT_NAME/mongo.repo /etc/yum.repos.d/mongo.repo
+cp /$SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Copy mongo repo service"
 
 dnf install mongodb-mongosh -y &>> $LOG_FILE
