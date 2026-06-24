@@ -56,6 +56,8 @@ curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue
 VALIDATE $? "Download code"
 cd /app 
 VALIDATE $? "Change Directory"
+rm -rf /app/*
+VALIDATE $? "Remove Content in App Directory"
 unzip /tmp/catalogue.zip &>> $LOG_FILE
 VALIDATE $? "Unzip the Code"
 
