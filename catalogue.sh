@@ -82,8 +82,13 @@ VALIDATE $? "Copy mongo repo service"
 dnf install mongodb-mongosh -y &>> $LOG_FILE
 VALIDATE $? "Install mongodb client"
 
-mongosh --host $MONGODB_HOST </app/db/master-data.js &>> $LOG_FILE
-VALIDATE $? "Create Schema"
+INDEX=$(mongosh mongodb.devaws.shop --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
+if [ $INDEX -le 1 ]; then
+    mongosh --host $MONGODB_HOST </app/db/master-data.js &>> $LOG_FILE
+    VALIDATE $? "Create Schema"
+else
+    echo -e "Catalogue products already exist $Y Skipping $N"
+fi
 
 systemctl restart catalogue.service &>> $LOG_FILE
 VALIDATE $? "Restart catalogue"
