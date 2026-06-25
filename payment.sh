@@ -31,30 +31,30 @@ VALIDATE(){
     fi
 }
 
-dnf install python3 gcc python3-devel -y
+dnf install python3 gcc python3-devel -y &>> $LOG_FILE
 VALIDATE $? "Installing Python"
-id roboshop
+id roboshop &>> $LOG_FILE
 if [ $? -ne 0 ]; then   
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $LOG_FILE
 else
     echo "roboshop already exists $Y Skipping..!$N"
 fi
 
-mkdir /app 
+mkdir /app &>> $LOG_FILE
 VALIDATE $? "Create Directory"
-curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip 
+curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip  &>> $LOG_FILE
 VALIDATE $? "Download Code"
-cd /app 
-VALIDATE $? "Change directory"
-unzip /tmp/payment.zip
+cd /app &>> $LOG_FILE
+VALIDATE $? "Change Directory"
+unzip /tmp/payment.zip &>> $LOG_FILE
 VALIDATE $? "Unzip code"
-cd /app 
+cd /app &>> $LOG_FILE
 VALIDATE $? "Change app directory"
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt &>> $LOG_FILE
 VALIDATE $? "Installing Requirments"
-systemctl daemon-reload
+systemctl daemon-reload &>> $LOG_FILE
 VALIDATE $? "daemon-reload"
-systemctl enable payment 
+systemctl enable payment &>> $LOG_FILE
 VALIDATE $? "Enable service"
-systemctl start payment
+systemctl start payment &>> $LOG_FILE
 VALIDATE $? "Start Service"
