@@ -1,4 +1,5 @@
 #!/bin/bash
+
 echo "the script start executed in $(date)"
 START_TIME=$(date +%s)
 
@@ -30,17 +31,14 @@ VALIDATE(){
     fi
 }
 
-cp rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
-VALIDATE $? "copying rabbitmq repo"
-dnf install rabbitmq-server -y
-VALIDATE $? "Installing Server"
-systemctl enable rabbitmq-server
-VALIDATE $? "Enable Server"
-systemctl start rabbitmq-server
-VALIDATE $? "Start the Server"
-rabbitmqctl add_user roboshop roboshop123
-VALIDATE $? "Added User"
-rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
-VALIDATE $? "Set Permissions to User"
+dnf module disable nginx -y
+dnf module enable nginx:1.24 -y
+dnf install nginx -y
 
-
+systemctl enable nginx 
+systemctl start nginx 
+rm -rf /usr/share/nginx/html/* 
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+cd /usr/share/nginx/html 
+unzip /tmp/frontend.zip
+systemctl restart nginx 
