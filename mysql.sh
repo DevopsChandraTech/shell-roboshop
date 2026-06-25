@@ -42,4 +42,4 @@ VALIDATE $? "Setting root pasword"
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(($END_TIME - $START_TIME))
-echo "Script Executed in : $Y $TOTAL_TIME $N Secs."
+echo -e "Script Executed in : $Y $TOTAL_TIME $N Secs."
