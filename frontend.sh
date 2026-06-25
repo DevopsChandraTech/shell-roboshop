@@ -31,14 +31,23 @@ VALIDATE(){
     fi
 }
 
-dnf module disable nginx -y
+dnf module disable nginx -y 
+VALIDATE $? "Disable nginx"
 dnf module enable nginx:1.24 -y
+VALIDATE $? "Enable nginx"
 dnf install nginx -y
-
+VALIDATE $? "Install nginx"
 systemctl enable nginx 
+VALIDATE $? "enable nginx"
 systemctl start nginx 
+VALIDATE $? "Start nginx"
 rm -rf /usr/share/nginx/html/* 
+VALIDATE $? "Remove default content"
 curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+VALIDATE $? "Download nginx code"
 cd /usr/share/nginx/html 
+VALIDATE $? "Change Directory"
 unzip /tmp/frontend.zip
-systemctl restart nginx 
+VALIDATE $? "Unzip code"
+systemctl restart nginx
+VALIDATE $? "restart nginx" 

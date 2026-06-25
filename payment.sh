@@ -37,10 +37,10 @@ id roboshop &>> $LOG_FILE
 if [ $? -ne 0 ]; then   
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $LOG_FILE
 else
-    echo "roboshop already exists $Y Skipping..!$N"
+    echo -e "roboshop already exists $Y Skipping..!$N"
 fi
 
-mkdir /app &>> $LOG_FILE
+mkdir -p /app &>> $LOG_FILE
 VALIDATE $? "Create Directory"
 curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip  &>> $LOG_FILE
 VALIDATE $? "Download Code"
