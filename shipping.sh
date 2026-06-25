@@ -33,39 +33,39 @@ VALIDATE(){
     fi
 }
 
-dnf install maven -y
+dnf install maven -y &>> $LOG_FILE
 VALIDATE $? "Install maven"
 
-id roboshop
+id roboshop &>> $LOG_FILE
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>> $LOG_FILE
 else
     echo -e "roboshop user already exist $Y Skipping...!$N"
 fi
 
-mkdir /app 
+mkdir /app &>> $LOG_FILE
 VALIDATE $? "Create Directory"
-curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
+curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip  &>> $LOG_FILE
 VALIDATE $? "Download Code"
-cd /app 
+cd /app &>> $LOG_FILE
 VALIDATE $? "Change Directory"
-unzip /tmp/shipping.zip
+unzip /tmp/shipping.zip &>> $LOG_FILE
 VALIDATE $? "Unzip Code"
-cd /app 
+cd /app &>> $LOG_FILE
 VALIDATE $? "Change Directory"
-mvn clean package 
-VALIDATE $? "Install Package"
-mv target/shipping-1.0.jar shipping.jar 
+mvn clean package &>> $LOG_FILE
+VALIDATE $? "Install Package" 
+mv target/shipping-1.0.jar shipping.jar &>> $LOG_FILE
 VALIDATE $? "Move jar file"
-cp /$SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
+cp /$SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>> $LOG_FILE
 VALIDATE $? "Coping repo"
-systemctl daemon-reload
+systemctl daemon-reload &>> $LOG_FILE
 VALIDATE $? "Daemon-reload"
-systemctl enable shipping 
+systemctl enable shipping &>> $LOG_FILE
 VALIDATE $? "Enable Shipping"
-systemctl start shipping
+systemctl start shipping &>> $LOG_FILE
 VALIDATE $? "Start Shipping"
-dnf install mysql -y 
+dnf install mysql -y &>> $LOG_FILE
 VALIDATE $? "Install mysql"
 
 INDEX=$(mongosh mongodb.devaws.shop --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
@@ -76,5 +76,5 @@ if [ $INDEX -le 0 ]; then
 else
     echo -e "shipping products already loaded $Y Skipping..! $N"
 fi
-systemctl restart shipping
+systemctl restart shipping &>> $LOG_FILE
 VALIDATE $? "Restart Service"
