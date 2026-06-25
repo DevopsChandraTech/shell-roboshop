@@ -21,6 +21,7 @@ SCRIPT_NAME=$(echo $0 | awk -F "." '{print $1}')
 SCRIPT_DIR=$PWD
 MONGODB_HOST="mongodb.devaws.shop"
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
+MYSQL_HOST="mysql.devaws.shop"
 
 mkdir -p $LOG_FOLDER
 
@@ -68,8 +69,8 @@ VALIDATE $? "Start Shipping"
 dnf install mysql -y &>> $LOG_FILE
 VALIDATE $? "Install mysql"
 
-INDEX=$(mongosh mongodb.devaws.shop --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')")
-if [ $INDEX -le 0 ]; then
+mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e 'use cities' &>> $LOG_FILE
+if [ $? -le 0 ]; then
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql 
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
