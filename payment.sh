@@ -19,6 +19,7 @@ fi
 LOG_FOLDER="/var/log/shell-script"
 SCRIPT_NAME=$(echo $0 | awk -F "." '{print $1}')
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
+SCRIPT_DIR=$PWD
 
 mkdir -p $LOG_FOLDER
 
@@ -56,6 +57,8 @@ pip3 install -r requirements.txt &>> $LOG_FILE
 VALIDATE $? "Installing Requirments"
 systemctl daemon-reload &>> $LOG_FILE
 VALIDATE $? "daemon-reload"
+cp /$SCRIPT_DIR/payment.service /etc/systemd/system/payment.service
+VALIDATE $? "Copying Payment Service"
 systemctl enable payment &>> $LOG_FILE
 VALIDATE $? "Enable service"
 systemctl restart payment &>> $LOG_FILE
