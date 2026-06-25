@@ -70,7 +70,7 @@ dnf install mysql -y &>> $LOG_FILE
 VALIDATE $? "Install mysql"
 
 mysql -h $MYSQL_HOST -uroot -pRoboShop@1 -e 'use cities' &>> $LOG_FILE
-if [ $? -le 0 ]; then
+if [ $? -ne 0 ]; then
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/schema.sql
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/app-user.sql 
     mysql -h $MYSQL_HOST -uroot -pRoboShop@1 < /app/db/master-data.sql
