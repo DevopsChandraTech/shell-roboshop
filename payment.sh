@@ -46,7 +46,7 @@ curl -L -o /tmp/payment.zip https://roboshop-artifacts.s3.amazonaws.com/payment-
 VALIDATE $? "Download Code"
 cd /app &>> $LOG_FILE
 VALIDATE $? "Change Directory"
-rm -rf /tmp/payment.zip
+rm -rf /tmp/payment.zip/*
 unzip /tmp/payment.zip &>> $LOG_FILE
 VALIDATE $? "Unzip code"
 cd /app &>> $LOG_FILE
