@@ -29,24 +29,7 @@ VALIDATE(){
     fi
 }
 
-dnf module disable redis -y &>> $LOG_FILE
-VALIDATE $? "disable redis"
-dnf module enable redis:7 -y &>> $LOG_FILE
-VALIDATE $? "enable redis"
-dnf install redis -y &>> $LOG_FILE
-VALIDATE $? "Install redis"
-
-sed -i -e 's/127.0.0.0/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
-
-systemctl enable redis &>> $LOG_FILE
-VALIDATE $? "Enable redis"
-systemctl restart redis &>> $LOG_FILE
-VALIDATE $? "restart redis"
-
-END_TIME=$(date +%s)
-TOTAL_TIME=$(($END_TIME - $START_TIME))
-echo -e "Script Executed in : $Y $TOTAL_TIME $N Secs."
-
+cp rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
 
 
 
