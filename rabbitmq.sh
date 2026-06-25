@@ -18,7 +18,7 @@ fi
 LOG_FOLDER="/var/log/shell-script"
 SCRIPT_NAME=$(echo $0 | awk -F "." '{print $1}')
 LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
-$SCRIPT_DIR=$PWD
+SCRIPT_DIR=$PWD
 
 mkdir -p $LOG_FOLDER
 
