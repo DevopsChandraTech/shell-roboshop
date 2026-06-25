@@ -48,6 +48,8 @@ mkdir -p /app &>> $LOG_FILE
 VALIDATE $? "Create Directory"
 curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip  &>> $LOG_FILE
 VALIDATE $? "Download Code"
+rm -rf /app/*
+VALIDATE $? "removing inside the code"
 cd /app &>> $LOG_FILE
 VALIDATE $? "Change Directory"
 unzip /tmp/shipping.zip &>> $LOG_FILE
