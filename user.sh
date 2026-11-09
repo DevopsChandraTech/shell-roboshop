@@ -60,7 +60,6 @@ cd /app
 VALIDATE $? "Change Directory"
 unzip /tmp/user.zip &>> $LOG_FILE
 VALIDATE $? "Unzip the Code"
-
 cd /app 
 VALIDATE $? "Change Directory"
 npm install &>> $LOG_FILE

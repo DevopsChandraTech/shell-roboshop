@@ -61,7 +61,7 @@ VALIDATE $? "Change Directory"
 unzip /tmp/catalogue.zip &>> $LOG_FILE
 VALIDATE $? "Unzip the Code"
 
-cd /app 
+cd /app
 VALIDATE $? "Change Directory"
 npm install &>> $LOG_FILE
 VALIDATE $? "Install Dependencies"
@@ -89,6 +89,7 @@ if [ $INDEX -le 1 ]; then
 else
     echo -e "Catalogue products already exist $Y Skipping $N"
 fi
+
 
 systemctl restart catalogue.service &>> $LOG_FILE
 VALIDATE $? "Restart catalogue"
